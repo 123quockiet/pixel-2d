@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.min.js"></script>
+</head>
+<body>
+  <div id="game"></div>
+  <script>
+    const testAtlasJson = {
+      frames: {
+        bg_map1: {
+          frame: { x: 4, y: 776, w: 1376, h: 768 },
+          rotated: false,
+          trimmed: false,
+          spriteSourceSize: { x: 0, y: 0, w: 1376, h: 768 },
+          sourceSize: { w: 1376, h: 768 }
+        }
+      },
+      meta: {
+        size: { w: 2048, h: 3333 }
+      }
+    };
+
+    const testConfig = {
+      type: Phaser.AUTO,
+      parent: 'game',
+      width: 800,
+      height: 600,
+      scene: {
+        preload: function() {
+          this.load.atlas('world', '../assets/world.png', testAtlasJson);
+        },
+        create: function() {
+          try {
+            const atlas = this.textures.get('world');
+            const srcImg = atlas.getSourceImage();
+            const frame = atlas.get('bg_map1');
+            console.log('Frame data:', frame.cutX, frame.cutY, frame.cutWidth, frame.cutHeight);
+            const canvas = this.textures.createCanvas('bg_map1', frame.width, frame.height);
+            const ctx = canvas.getContext();
+            ctx.drawImage(srcImg, frame.cutX, frame.cutY, frame.cutWidth, frame.cutHeight, 0, 0, frame.width, frame.height);
+            canvas.refresh();
+            console.log('canvas.refresh SUCCESS!');
+
+            // Test tileSprite with this canvas
+            const ts = this.add.tileSprite(0, 0, 800, 600, 'bg_map1').setOrigin(0, 0);
+            console.log('tileSprite SUCCESS!');
+            this.add.text(400, 500, 'CANVAS + TILESPRITE SUCCESS', { fontSize: '24px', color: '#00ff00' }).setOrigin(0.5);
+          } catch (e) {
+            console.error('ERROR in createCanvas / tileSprite:', e);
+            this.add.text(400, 500, 'ERROR: ' + e.message, { fontSize: '20px', color: '#ff0000' }).setOrigin(0.5);
+          }
+        }
+      }
+    };
+    new Phaser.Game(testConfig);
+  </script>
+</body>
+</html>

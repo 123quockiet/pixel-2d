@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <script src="https://cdn.jsdelivr.net/npm/phaser@3.60.0/dist/phaser.min.js"></script>
+</head>
+<body>
+  <div id="output" style="color: white; font-family: monospace; white-space: pre; background: #111; padding: 20px;"></div>
+  <script>
+    function log(msg) {
+      console.log(msg);
+      document.getElementById('output').textContent += msg + '\n';
+    }
+
+    const config = {
+      type: Phaser.AUTO,
+      width: 400,
+      height: 300,
+      scene: {
+        preload: function() {
+          this.load.on('loaderror', function(file) {
+            log('LOAD ERROR: key=' + file.key + ' src=' + file.src + ' type=' + file.type);
+          });
+          this.load.on('filecomplete', function(key, type) {
+            log('FILE COMPLETE: key=' + key);
+          });
+          this.load.image('demon', '../assets/mon_infernal_demon.png');
+          this.load.image('entities_img', '../assets/entities.png');
+        },
+        create: function() {
+          log('demon exists: ' + this.textures.exists('demon'));
+          log('entities_img exists: ' + this.textures.exists('entities_img'));
+        }
+      }
+    };
+    new Phaser.Game(config);
+  </script>
+</body>
+</html>
